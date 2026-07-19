@@ -1,6 +1,8 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 import {
   useAppDispatch,
   useAppSelector,
@@ -9,12 +11,22 @@ import {
 import {
   loginRequest,
   selectLoading,
+  selectAuthError,
+  selectIsAuthenticated,
 } from "@/store/auth";
+import { Button, Card, Input } from "@/components/ui";
 
 export default function LoginPage() {
   const dispatch = useAppDispatch();
+  const router = useRouter();
 
   const loading = useAppSelector(selectLoading);
+
+  const isAuthenticated =
+    useAppSelector(selectIsAuthenticated);
+
+  const error =
+    useAppSelector(selectAuthError);
 
   const [login, setLogin] = useState("");
 
@@ -31,45 +43,82 @@ export default function LoginPage() {
     );
   };
 
+  useEffect(() => {
+    if (isAuthenticated) {
+      toast.success("Login successful.");
+
+      router.replace("/dashboard");
+    }
+  }, [isAuthenticated, router]);
+
+  useEffect(() => {
+    if (error) {
+      toast.error(error);
+    }
+  }, [error]);
+
   return (
-    <div className="flex min-h-screen items-center justify-center">
+    <div className="flex min-h-screen items-center justify-center bg-slate-100 px-4">
 
-      <form
-        onSubmit={handleSubmit}
-        className="w-full max-w-sm space-y-4 rounded border p-6"
-      >
-        <h1 className="text-2xl font-bold">
-          Login
-        </h1>
+      <Card className="w-full max-w-md">
+        <Card.Header className="space-y-3 text-center">
+          <Card.Title>
+            Welcome Back 👋
+          </Card.Title>
 
-        <input
-          type="email"
-          placeholder="Enter usernmae or email"
-          value={login}
-          onChange={(e) =>
-            setLogin(e.target.value)
-          }
-          className="w-full rounded border p-2"
-        />
+          <Card.Description>
+            Sign in to your account to continue.
+          </Card.Description>
+        </Card.Header>
 
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) =>
-            setPassword(e.target.value)
-          }
-          className="w-full rounded border p-2"
-        />
+        <Card.Content>
+          <form
+            onSubmit={handleSubmit}
+            className="space-y-5"
+          >
+            <Input
+              id="login"
+              label="Username / Email"
+              name="login"
+              placeholder="Enter username or email"
+              value={login}
+              onChange={(e) => setLogin(e.target.value)}
+              required
+            />
 
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full rounded bg-blue-600 p-2 text-white"
-        >
-          {loading ? "Loading..." : "Login"}
-        </button>
-      </form>
+            <Input
+              id="password"
+              label="Password"
+              name="password"
+              type="password"
+              placeholder="Enter password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+
+            <Button
+              type="submit"
+              loading={loading}
+              fullWidth
+            >
+              Sign In
+            </Button>
+          </form>
+        </Card.Content>
+
+        <Card.Footer>
+          <p className="text-sm text-slate-600">
+            Don't have an account?{" "}
+            <a
+              href="/register"
+              className="font-medium text-blue-600 hover:underline"
+            >
+              Register
+            </a>
+          </p>
+        </Card.Footer>
+      </Card>
 
     </div>
   );
