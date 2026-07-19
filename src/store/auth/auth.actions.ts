@@ -1,16 +1,20 @@
 import { createAction } from "@reduxjs/toolkit";
 
-import { LoginPayload, User } from "./auth.types";
+import {
+  LoginFailurePayload,
+  LoginPayload,
+  LoginSuccessPayload,
+} from "./auth.types";
 
 export const loginRequest = createAction<LoginPayload>(
   "auth/loginRequest",
 );
 
-export const loginSuccess = createAction<User>(
+export const loginSuccess = createAction<LoginSuccessPayload>(
   "auth/loginSuccess",
 );
 
-export const loginFailure = createAction<string>(
+export const loginFailure = createAction<LoginFailurePayload>(
   "auth/loginFailure",
 );
 

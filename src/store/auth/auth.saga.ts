@@ -1,5 +1,9 @@
 import { all, call, put, takeLatest } from "redux-saga/effects";
 
+import {
+  getApiErrorMessage,
+  getApiFieldErrors,
+} from "@/helpers/api.helper";
 import TokenHelper from "@/helpers/token.helper";
 import AuthService from "@/services/auth.service";
 
@@ -30,14 +34,17 @@ function* loginWorker(
     );
 
     yield put(
-      loginSuccess(data.user),
+      loginSuccess({
+        user: data.user,
+        message: data.message ?? "",
+      }),
     );
-  } catch (error: any) {
+  } catch (error: unknown) {
     yield put(
-      loginFailure(
-        error.response?.data?.message ||
-          "Login failed",
-      ),
+      loginFailure({
+        error: getApiErrorMessage(error),
+        fieldErrors: getApiFieldErrors(error),
+      }),
     );
   }
 }

@@ -19,3 +19,11 @@ export const selectIsAuthenticated = (
 export const selectAuthError = (
   state: RootState,
 ) => state.auth.error;
+
+export const selectAuthFieldErrors = (
+  state: RootState,
+) => state.auth.fieldErrors;
+
+export const selectAuthSuccessMessage = (
+  state: RootState,
+) => state.auth.successMessage;
