@@ -1,5 +1,7 @@
 import axios from "axios";
 
+import { setupInterceptors } from "./apiInterceptor";
+
 const apiClient = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
   headers: {
@@ -8,5 +10,7 @@ const apiClient = axios.create({
   },
   timeout: 30000,
 });
+
+setupInterceptors(apiClient);
 
 export default apiClient;

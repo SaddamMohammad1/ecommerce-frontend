@@ -2,6 +2,7 @@
 
 import { Provider } from "react-redux";
 
+import { AuthInitializer } from "@/components/auth";
 import { store } from "@/store/store";
 
 type Props = {
@@ -13,7 +14,9 @@ export default function ReduxProvider({
 }: Props) {
   return (
     <Provider store={store}>
-      {children}
+      <AuthInitializer>
+        {children}
+      </AuthInitializer>
     </Provider>
   );
 }

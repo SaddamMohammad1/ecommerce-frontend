@@ -1,11 +1,23 @@
-import apiClient from "./apiClient";
+import type { AxiosInstance } from "axios";
 
-apiClient.interceptors.request.use(
-  (config) => config,
-  (error) => Promise.reject(error),
-);
+import TokenHelper from "@/helpers/token.helper";
 
-apiClient.interceptors.response.use(
-  (response) => response,
-  (error) => Promise.reject(error),
-);
+export function setupInterceptors(client: AxiosInstance) {
+  client.interceptors.request.use(
+    (config) => {
+      const token = TokenHelper.getAccessToken();
+
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+      }
+
+      return config;
+    },
+    (error) => Promise.reject(error),
+  );
+
+  client.interceptors.response.use(
+    (response) => response,
+    (error) => Promise.reject(error),
+  );
+}

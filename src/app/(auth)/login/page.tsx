@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useEffect, useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import {
@@ -15,6 +16,7 @@ import {
   selectAuthFieldErrors,
   selectAuthSuccessMessage,
   selectIsAuthenticated,
+  selectIsAuthInitialized,
 } from "@/store/auth";
 import { Button, Card, Input } from "@/components/ui";
 import {
@@ -55,6 +57,9 @@ export default function LoginPage() {
 
   const isAuthenticated =
     useAppSelector(selectIsAuthenticated);
+
+  const isAuthInitialized =
+    useAppSelector(selectIsAuthInitialized);
 
   const error =
     useAppSelector(selectAuthError);
@@ -108,20 +113,30 @@ export default function LoginPage() {
   };
 
   useEffect(() => {
+    if (!isAuthInitialized) return;
+
     if (isAuthenticated) {
       if (successMessage) {
         toast.success(successMessage);
       }
 
-      router.replace("/dashboard");
+      router.replace("/");
     }
-  }, [isAuthenticated, router, successMessage]);
+  }, [isAuthenticated, isAuthInitialized, router, successMessage]);
 
   useEffect(() => {
     if (error) {
       toast.error(error);
     }
   }, [error]);
+
+  if (!isAuthInitialized) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-slate-100">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-blue-600 border-t-transparent" />
+      </div>
+    );
+  }
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-slate-100 px-4">
@@ -178,6 +193,15 @@ export default function LoginPage() {
               error={passwordError}
             />
 
+            <div className="text-right">
+              <Link
+                href="/forgot-password"
+                className="text-sm font-medium text-blue-600 hover:underline"
+              >
+                Forgot password?
+              </Link>
+            </div>
+
             {password.length > 0 &&
               unmetPasswordRules.length > 0 && (
               <ul
@@ -214,12 +238,12 @@ export default function LoginPage() {
         <Card.Footer>
           <p className="text-sm text-slate-600">
             Don't have an account?{" "}
-            <a
+            <Link
               href="/register"
               className="font-medium text-blue-600 hover:underline"
             >
               Register
-            </a>
+            </Link>
           </p>
         </Card.Footer>
       </Card>
