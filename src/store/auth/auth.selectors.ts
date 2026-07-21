@@ -16,6 +16,22 @@ export const selectIsAuthenticated = (
   state: RootState,
 ) => state.auth.isAuthenticated;
 
+export const selectIsAuthInitialized = (
+  state: RootState,
+) => state.auth.isInitialized;
+
+export const selectProfileLoading = (
+  state: RootState,
+) => state.auth.profileLoading;
+
 export const selectAuthError = (
   state: RootState,
 ) => state.auth.error;
+
+export const selectAuthFieldErrors = (
+  state: RootState,
+) => state.auth.fieldErrors;
+
+export const selectAuthSuccessMessage = (
+  state: RootState,
+) => state.auth.successMessage;
